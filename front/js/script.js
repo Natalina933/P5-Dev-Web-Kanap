@@ -12,8 +12,6 @@ fetch("http://localhost:3000/api/products")
 
   //création d'un élèment par canapé et l'ajouter dans le DOM
   .then(function (products) {
-    console.log(products);
-
     for (const product of products) {
       let link = document.createElement("a");
       link.href = "./product.html?id=" + product._id;
@@ -27,21 +25,17 @@ fetch("http://localhost:3000/api/products")
       img.alt = product.altTxt;
       article.appendChild(img);
 
-      console.log(img);
-
       let productName = document.createElement("h3");
+      productName.textContent = product.name;
       productName.classList.add("productName");
       article.appendChild(productName);
 
-      console.log(productName);
-
       let productDescription = document.createElement("p");
+      productDescription.textContent = product.description;
       productDescription.classList.add("productDescription");
       article.appendChild(productDescription);
 
-      console.log(product);
+      document.getElementById("items").appendChild(link);
     }
   });
-    //création d'un élèment par canapé et l'ajouter dans le DOM
-
 
