@@ -1,42 +1,36 @@
-//récupérer l'API la liste des canapés sur le serveur- création d'une promesse
-fetch("http://localhost:3000/api/products")
-  .then(function (reponse) {
-    if (reponse.ok) {
-      return reponse.json();
-    }
-    throw "erreur";
-  })
-  .catch((error) => {
-    alert("une erreur est survenue");
-  })
+/**
+ * 2 construire le html
+ * 3 injecter l' html dans le dom
+ *  3.1 Pointer sur l'élément items
+ *  3.2 injecter dans le dom
+ */
+//1 récupérer l'API la liste des canapés sur le serveur- création d'une promesse
+dataFetch();
+async function dataFetch() {
+  let resapi = "http://localhost:3000/api/products";
 
-  //création d'un élèment par canapé et l'ajouter dans le DOM
-  .then(function (products) {
-    for (const product of products) {
-      let link = document.createElement("a");
-      link.href = "./product.html?id=" + product._id;
+  await fetch(resapi)
+    .then((res) => res.json()) //promesse en demande une autre promesse
+    //boucle - parcourir l'api
+    .then((products) => {
+      for (let article of products) {
+        let display = ""
+        display += `
+        <a href="./product.html?id=${article._id}">
+          <article>
+            <img src="${article.imageUrl}" alt="${article.altTxt}">
+            <h3 class="productName">${article.name}</h3>
+            <p class="productDescription">${article.description}</p>
+          </article>
+        </a>
+`;
+        document
+          .getElementById("items")
+          .insertAdjacentHTML("beforeend", display);
+      }
+    })
+    .catch((err) => console.log(err));
+}
 
-      let article = document.createElement("article");
-      //déclarer article comme enfant de link
-      link.appendChild(article);
-
-      let img = document.createElement("img");
-      img.src = product.imageUrl;
-      img.alt = product.altTxt;
-      article.appendChild(img);
-
-      let productName = document.createElement("h3");
-      productName.textContent = product.name;
-      productName.classList.add("productName");
-      article.appendChild(productName);
-
-      let productDescription = document.createElement("p");
-      productDescription.textContent = product.description;
-      productDescription.classList.add("productDescription");
-      article.appendChild(productDescription);
-
-      document.getElementById("items").appendChild(link);
-    }
-  });
-
-
+//2 construire le html
+// <!--            -->
