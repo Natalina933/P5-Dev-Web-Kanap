@@ -1,10 +1,4 @@
-/**
- * 2 construire le html
- * 3 injecter l' html dans le dom
- *  3.1 Pointer sur l'élément items
- *  3.2 injecter dans le dom
- */
-//1 récupérer l'API la liste des canapés sur le serveur- création d'une promesse
+// Récupérer l'API la liste des canapés sur le serveur- création d'une promesse
 dataFetch();
 async function dataFetch() {
   let resapi = "http://localhost:3000/api/products";
@@ -14,7 +8,7 @@ async function dataFetch() {
     //boucle - parcourir l'api
     .then((products) => {
       for (let article of products) {
-        let display = ""
+        let display = ""// affiche le html
         display += `
         <a href="./product.html?id=${article._id}">
           <article>
@@ -24,7 +18,7 @@ async function dataFetch() {
           </article>
         </a>
 `;
-        document
+        document //pointer sur l'élément items et injecter l' html dans le dom  
           .getElementById("items")
           .insertAdjacentHTML("beforeend", display);
       }
@@ -32,5 +26,3 @@ async function dataFetch() {
     .catch((err) => console.log(err));
 }
 
-//2 construire le html
-// <!--            -->
