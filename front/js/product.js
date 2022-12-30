@@ -66,9 +66,9 @@ function addToCart(product, quantity, color) {
   //Fonction fenetre pop up
   const popupConfirmation = () => {
     if (window.confirm(`${product._id} a bien été ajouté au panier`)) {
-      window.location.href = cart.html;
+      window.location.href = "./cart.html";
     } else {
-      window.location.href = index.html;
+      window.location.href = "./index.html";
     }
   };
 

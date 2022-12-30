@@ -1,67 +1,98 @@
-//On stock un tableau vide dans une variable
-const cart = [];
-let displayProductInCart = document.querySelector("#cart__items");
-// let cart = JSON.parse(localStorage.getItem("panier")) || []; //transf. string
+// let displayProductInCart = document.querySelector("#cart__items");
 
-// Promesse - Récupérer la liste dans le localStorage
-function salvageFromCache() {
-    const numberOfItems = localStorage.length;
-    for (let i = 0; i < numberOfItems; i++) {
-    const item = localStorage.getItem("panier");
-    const itemObjet = JSON.parse(item); //transf. objet
-    cart.push(itemObjet);
+const url = new URL(window.location.href);
+const id = url.searchParams.get("id");
 
-    console.log(cart);
-    }
+let panier = [];
+let infos = [];
+
+// Récupérer la liste dans le localStorage
+function getFromCache() {
+  const jsonFromCache = localStorage.getItem("panier");
+  if (jsonFromCache) {
+    return [];
+  }
+
+  return JSON.parse(jsonFromCache);
 }
-salvageFromCache();
+panier = getFromCache();
+// Récupérer un produit depuis l'API
+function getProductFromAPI(id) {
+  return fetch("http://localhost:3000/api/products" + id)
+    .then((res) => res.json())
+    .then((product) => {
+      return product;
+    });
+}
+// supprimer le panier
+function deleteItem(id, color) {
+  panier = panier.filter(
+    (article) => article._id === id || article.color === color
+  );
+  localStorage.setItem("panier", JSON.stringify(panier));
+  refreshDisplay();
+}
+//Tableau contenant les promesse des infos de chaque produit de son panier récupérer dans le localStage
+function displayProducts(products, infos) {
+  for (let article of products) {
+    const productsFromAPI = infos.find((product) => product._id === article._id);
+  }
+  }
+const tableauPromesse = panier.map((productInCart) =>
+  getProductFromAPI(productInCart._id)
+);
 
-// const tabPromises =salvageFromCache.map( id => {
-// 	return fetch("http://locahost:3000/request/"+ id)
-// })
+Promise.all(tableauPromesse)
+.then((productsFromAPI) => {
+  infos = productsFromAPI;
+  refreshDisplay();
+});
 
-// Promise.all(tabPromises)
-// 	.then(tabResponse => {
-// 		return Promise.all(tabRespose.map(response => response.json()))
-// 	})
-// 	.then(tabResult => {
-// 		console.log(tabResult)
-// 	})
 
-//Créer et insérer des éléments dans la page Panier.
-fetch("http://locahost:3000/product/"+id)
-    .then((res) => res.json()) //promesse en demande une autre promesse
-  //boucle - parcourir l'api
-    .then((products) => {
-    for (let article of products) {
-      let display = ""; // affiche le html
-        display += `
-        <article class="cart__item" data-id="${cart._id}" data-color="{product-color}">
-                <div class="cart__item__img">
-                    <img src="${cart.imageUrl}" alt="${cart.altTxt}">
+//Créer et insérer des éléments
+function refreshDisplay() {
+    document.getElementById("cart__items").innerHTML = "";
+    for (let article of panier) {
+    const productsFromAPI = infos.find(
+        (product) => product._id === article._id
+    );
+
+    let articleElt = document.createElement("article");
+    articleElt.classList.add("cart__item");
+    articleElt.dataset.id = productsFromAPI._id;
+    articleElt.dataset.color = article.color;
+    articleElt.innerHTML = `
+        <div class="cart__item__img">
+            <img src="${productsFromAPI.imageUrl}" alt="${productsFromAPI.altTxt}">
                 </div>
                 <div class="cart__item__content">
-                <div class="cart__item__content__description">
-                    <h2>${cart.name}</h2>
-                    <p>${cart.color}</p>
-                    <p>${cart.price}</p>
+                    <div class="cart__item__content__description">
+                    <h2>${productsFromAPI.name}</h2>
+                    <p>${article.color}</p>
+                    <p>${productsFromAPI.price}</p>
+                    </div>
+                    <div class="cart__item__content__settings">
+                    <div class="cart__item__content__settings__quantity">
+                        <p>Qté : </p>
+                        <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
+                    </div>
+                    <div class="cart__item__content__settings__delete">
+                        <p class="deleteItem">Supprimer</p>
+                    </div>
+                    </div>
                 </div>
-                //   <div class="cart__item__content__settings">
-                //     <div class="cart__item__content__settings__quantity">
-                //       <p>Qté : </p>
-                //       <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
-                //     </div>
-                //     <div class="cart__item__content__settings__delete">
-                //       <p class="deleteItem">Supprimer</p>
-                //     </div>
-                    // </div>
-                </div>
-        </article>
-`;
-      //pointer sur l'élément items et injecter l' html dans le dom
-      document
-        .getElementById("cart__items")
-        .insertAdjacentHTML("beforeend", display);
+        `;
+    articleElt
+        .querySelector(".deleteItem")
+        .addEventListener(click, function (event) {
+        event.preventDefault();
+        const id = event.target.closest(".cart__item").dataset.color;
+        deleteItem(id, color);
+        });
+    //pointer sur l'élément items et injecter l' html dans le dom
+    document.getElementById("cart__item").appendChild(articleElt);
     }
-  })
-  .catch((err) => console.log(err));
+}
+
+
+//  .catch((err) => console.log(err));
