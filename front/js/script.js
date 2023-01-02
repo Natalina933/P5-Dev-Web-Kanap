@@ -1,9 +1,9 @@
 // Récupérer l'API la liste des canapés sur le serveur- création d'une promesse
 dataFetch();
-async function dataFetch() {
+function dataFetch() {
   let resapi = "http://localhost:3000/api/products";
 
-  await fetch(resapi)
+  fetch(resapi)
     .then((res) => res.json()) //promesse en demande une autre promesse
     //boucle - parcourir l'api
     .then((products) => {

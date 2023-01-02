@@ -9,7 +9,7 @@ let infos = [];
 // Récupérer la liste dans le localStorage
 function getFromCache() {
   const jsonFromCache = localStorage.getItem("panier");
-  if (jsonFromCache) {
+  if (!jsonFromCache || jsonFromCache === undefined) {
     return [];
   }
 
@@ -18,16 +18,18 @@ function getFromCache() {
 panier = getFromCache();
 // Récupérer un produit depuis l'API
 function getProductFromAPI(id) {
-  return fetch("http://localhost:3000/api/products" + id)
+  return fetch(`http://localhost:3000/api/products/${id}`)
     .then((res) => res.json())
     .then((product) => {
       return product;
     });
 }
+console.log(panier);
 // supprimer le panier
+
 function deleteItem(id, color) {
   panier = panier.filter(
-    (article) => article._id === id || article.color === color
+    (article) => article._id != id || article.color != color
   );
   localStorage.setItem("panier", JSON.stringify(panier));
   refreshDisplay();
@@ -35,28 +37,27 @@ function deleteItem(id, color) {
 //Tableau contenant les promesse des infos de chaque produit de son panier récupérer dans le localStage
 function displayProducts(products, infos) {
   for (let article of products) {
-    const productsFromAPI = infos.find((product) => product._id === article._id);
+    const productsFromAPI = infos.find(
+      (product) => product._id === article._id
+    );
   }
-  }
+}
 const tableauPromesse = panier.map((productInCart) =>
   getProductFromAPI(productInCart._id)
 );
 
-Promise.all(tableauPromesse)
-.then((productsFromAPI) => {
+Promise.all(tableauPromesse).then((productsFromAPI) => {
   infos = productsFromAPI;
   refreshDisplay();
 });
 
-
 //Créer et insérer des éléments
 function refreshDisplay() {
-    document.getElementById("cart__items").innerHTML = "";
-    for (let article of panier) {
+  document.getElementById("cart__items").innerHTML = "";
+  for (let article of panier) {
     const productsFromAPI = infos.find(
-        (product) => product._id === article._id
+      (product) => product._id === article._id
     );
-
     let articleElt = document.createElement("article");
     articleElt.classList.add("cart__item");
     articleElt.dataset.id = productsFromAPI._id;
@@ -83,16 +84,31 @@ function refreshDisplay() {
                 </div>
         `;
     articleElt
-        .querySelector(".deleteItem")
-        .addEventListener(click, function (event) {
+      .querySelector(".deleteItem")
+      .addEventListener("click", function (event) {
         event.preventDefault();
-        const id = event.target.closest(".cart__item").dataset.color;
+        const id = event.target.closest(".cart__items").dataset.color;
         deleteItem(id, color);
-        });
+      });
     //pointer sur l'élément items et injecter l' html dans le dom
-    document.getElementById("cart__item").appendChild(articleElt);
+    document.getElementById("cart__items").appendChild(articleElt);
+  }
+  function getNumberProduct() {
+    let panier = getFromCache();
+    let number = 0;
+    for (let product of panier) {
+      number += product.quantity;
     }
+    return number;
+  }
+  function getTotalPrice() {
+    let panier = getFromCache();
+    let number = 0;
+    for (let product of panier) {
+      number += product.quantity * product.price;
+    }
+    return number;
+  }
 }
-
 
 //  .catch((err) => console.log(err));
