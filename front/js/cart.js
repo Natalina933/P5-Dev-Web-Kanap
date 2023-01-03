@@ -35,13 +35,6 @@ function deleteItem(id, color) {
   refreshDisplay();
 }
 //Tableau contenant les promesse des infos de chaque produit de son panier récupérer dans le localStage
-function displayProducts(products, infos) {
-  for (let article of products) {
-    const productsFromAPI = infos.find(
-      (product) => product._id === article._id
-    );
-  }
-}
 const tableauPromesse = panier.map((productInCart) =>
   getProductFromAPI(productInCart._id)
 );
@@ -54,6 +47,9 @@ Promise.all(tableauPromesse).then((productsFromAPI) => {
 //Créer et insérer des éléments
 function refreshDisplay() {
   document.getElementById("cart__items").innerHTML = "";
+  let totalQuantity = 0;
+  let totalPrice = 0;
+
   for (let article of panier) {
     const productsFromAPI = infos.find(
       (product) => product._id === article._id
@@ -75,7 +71,7 @@ function refreshDisplay() {
                     <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
                         <p>Qté : </p>
-                        <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
+                        <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${article.quantity}"">
                     </div>
                     <div class="cart__item__content__settings__delete">
                         <p class="deleteItem">Supprimer</p>
@@ -83,32 +79,28 @@ function refreshDisplay() {
                     </div>
                 </div>
         `;
+        totalQuantity += article.quantity;
+        totalPrice += productsFromAPI.price * article.quantity;
+
+        document.getElementById("totalPrice").innerHTML = totalPrice + " €";
+        document.getElementById("totalQuantity").innerHTML = totalQuantity;
+
     articleElt
       .querySelector(".deleteItem")
       .addEventListener("click", function (event) {
         event.preventDefault();
-        const id = event.target.closest(".cart__items").dataset.color;
+        const id = articleElt.dataset.id;
+        const color = articleElt.dataset.color;
         deleteItem(id, color);
       });
+
     //pointer sur l'élément items et injecter l' html dans le dom
     document.getElementById("cart__items").appendChild(articleElt);
   }
-  function getNumberProduct() {
-    let panier = getFromCache();
-    let number = 0;
-    for (let product of panier) {
-      number += product.quantity;
-    }
-    return number;
-  }
-  function getTotalPrice() {
-    let panier = getFromCache();
-    let number = 0;
-    for (let product of panier) {
-      number += product.quantity * product.price;
-    }
-    return number;
-  }
-}
 
-//  .catch((err) => console.log(err));
+
+
+  
+}
+// .catch((err) => console.log(err));
+
