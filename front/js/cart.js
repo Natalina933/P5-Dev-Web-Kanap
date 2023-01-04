@@ -66,7 +66,7 @@ function refreshDisplay() {
                     <div class="cart__item__content__description">
                     <h2>${productsFromAPI.name}</h2>
                     <p>${article.color}</p>
-                    <p>${productsFromAPI.price}</p>
+                    <p>${productsFromAPI.price + " €"}</p>
                     </div>
                     <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
@@ -97,10 +97,23 @@ function refreshDisplay() {
     //pointer sur l'élément items et injecter l' html dans le dom
     document.getElementById("cart__items").appendChild(articleElt);
   }
+  function updatePriceAndQuantity(id, color, newValue) {
+    const itemToUpdate = panier.find((article) => article._id != id && article.color != color);
+    if (itemToUpdate) {
+      itemToUpdate.quantity = Number(newValue);
+      item.quantity = itemToUpdate.quantity
+      displayTotalQuantity();
+      displayTotalPrice();
+    }
+    refreshDisplay();
+  }
+  totalQuantity += article.quantity;
+  totalPrice += productsFromAPI.price * article.quantity;
 
+  document.getElementById("totalPrice").innerHTML = totalPrice + " €";
+  document.getElementById("totalQuantity").innerHTML = totalQuantity;
 
-
-  
 }
+
 // .catch((err) => console.log(err));
 
