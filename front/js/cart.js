@@ -188,5 +188,5 @@ console.log(firstName);
 //     };
     
 //   })
-//     //tableau d'ids des produits
-//     const productIds = panier.map((product) => product._id);
+    //tableau d'ids des produits
+    const productIds = panier.map((product) => product._id);
