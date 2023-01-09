@@ -64,13 +64,13 @@ function addToCart(product, quantity, color) {
     (item) => item._id === product._id && item.color === color
   );
   //Fonction fenetre pop up
-  // const popupConfirmation = () => {
-  //   if (window.confirm(`${product._id} a bien été ajouté au panier`)) {
-  //     window.location.href = "./cart.html";
-  //   } else {
-  //     window.location.href = "./index.html";
-  //   }
-  // };
+  const popupConfirmation = () => {
+    if (window.confirm(`${product.name} a bien été ajouté au panier`)) {
+      window.location.href = "./cart.html";
+    } else {
+      window.location.href = "./index.html";
+    }
+  };
   //si le produit est déjà dans le panier
   if (productInCart) {
     productInCart.quantity = productInCart.quantity + quantity; // si produit identique ajoute au produit similaire
