@@ -3,7 +3,7 @@
 //////////////////////////
 
 //Modification de la balise title du navigateur cart --> Page Panier (plus compréhensible par l'utilisateur)
-document.title  =  "Page Panier" ;
+document.title = "Page Panier";
 //Déclaration des variables - panier (LS) et infos ()stockeront
 let panier = [];
 let infos = [];
@@ -15,7 +15,7 @@ function getFromCache() {
   if (!jsonFromCache || jsonFromCache === undefined) {
     return [];
   }
-  
+
   //JSON.parse c'est pour convertir les données au format JSON qui sont dans le localStorage en objet javascript
   return JSON.parse(jsonFromCache);
 }
@@ -71,7 +71,7 @@ Promise.all(tableauPromesse)
   });
 
 //Créer et insérer des éléments
-//Sélection de la balise de la page 
+//Sélection de la balise de la page
 //product.html dans laquel on va insérer les produits et leurs infos
 function refreshDisplay() {
   document.getElementById("cart__items").innerHTML = "";
@@ -144,84 +144,110 @@ function refreshDisplay() {
 //////////////////////////////////////////////// //////////////
 // Eléments de formulaire & requête POST ////////////////////
 //////////////////////////////////////////////// //////////////
-  document.getElementById("order").addEventListener("click", function (event) {
+document.getElementById("order").addEventListener("click", function (event) {
   event.preventDefault();
-  //Contrôle des infos avec Regex et Récupération des données du formulaire  
+  //Contrôle des infos avec Regex et Récupération des données du formulaire
   //Création des expressions régulières pour contrôler les infos entrées par l'utilisateur
   //// REGEX
-  // pas de regex pour les adresses, l'attribut "required"   
+  // pas de regex pour les adresses, l'attribut "required"
   // let textRegex = new RegExp("^[^.?!:;,/\\/_-]([. '-]?[a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$");
-  let addressRegex = /^[^.?!:;,/\\/_-]([, .:;'-]?[0-9a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$/;
-  let emailRegex = /^[^. ?!:;,/\\/_-]([._-]?[a-z0-9])+[^.?!: ;,/\\/_-][@][a-z0-9]+[.][a-z][a-z]+$/;
-  
+  let addressRegex =
+    /^[^.?!:;,/\\/_-]([, .:;'-]?[0-9a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$/;
+  let emailRegex =
+    /^[^. ?!:;,/\\/_-]([._-]?[a-z0-9])+[^.?!: ;,/\\/_-][@][a-z0-9]+[.][a-z][a-z]+$/;
+
   function displayFromError(inputId, message) {
-    // Get the element with the specified inputId
+    //Récupère l'élément avec l'inputId
     const inputElement = document.getElementById(inputId);
-  
-    // Add an error message after the input element
+
+    // Ajouter un message d'erreur après l'élément d'entrée
     const errorElement = document.createElement("p");
     errorElement.classList.add("error-message");
     errorElement.innerText = message;
-    inputElement.parentNode.insertBefore(errorElement, inputElement.nextSibling);
-  
-    // Add a red border to the input element
+    inputElement.parentNode.insertBefore(
+      errorElement,
+      inputElement.nextSibling
+    );
+
+    // Ajouter une bordure rouge à l'élément d'entrée
     inputElement.classList.add("error");
-  }  
-  
-  
+  }
+
   //Récupérer les valeurs du formulaire
-const firstName = document.getElementById("firstName").value;
-console.log(firstName);
-if (!firstName || firstName === "") {
-  displayFromError("firstName", "Veuillez renseigner votre prénom");
-}
-const lastName = document.getElementById("lastName").value;
-console.log(lastName);
-if (!lastName || lastName === "") {
-  displayFromError("lastName", "Veuillez renseigner votre nom");
-}
-const address = document.getElementById("address").value;
-console.log(address);
+  const firstName = document.getElementById("firstName").value;
+  console.log(firstName);
+  if (!firstName || firstName === "") {
+    displayFromError("firstName", "Veuillez renseigner votre prénom");
+  }
+  const lastName = document.getElementById("lastName").value;
+  console.log(lastName);
+  if (!lastName || lastName === "") {
+    displayFromError("lastName", "Veuillez renseigner votre nom");
+  }
+  const address = document.getElementById("address").value;
+  console.log(address);
 
-if (!address || address === "") {
-  displayFromError("address", "Veuillez renseigner votre adresse");
-}else if (!addressRegex.test(address)) {
-  displayFromError("address", "Veuillez renseigner une adresse valide");
-}
-const city = document.getElementById("city").value;
-if (!city || city === "") {
-  displayFromError("city", "Veuillez renseigner votre ville");
-}
-const email = document.getElementById("email").value;
-console.log(email);
-if (!email || email === "") {
-  displayFromError("email", "Veuillez renseigner votre email");
-} else if (!emailRegex.test(email)) {
-  displayFromError("email", "Veuillez renseigner un email valide");
-}
-})
+  if (!address || address === "") {
+    displayFromError("address", "Veuillez renseigner votre adresse");
+  } else if (!addressRegex.test(address)) {
+    displayFromError("address", "Veuillez renseigner une adresse valide");
+  }
+  const city = document.getElementById("city").value;
+  if (!city || city === "") {
+    displayFromError("city", "Veuillez renseigner votre ville");
+  }
+  const email = document.getElementById("email").value;
+  console.log(email);
+  if (!email || email === "") {
+    displayFromError("email", "Veuillez renseigner votre email");
+  } else if (!emailRegex.test(email)) {
+    displayFromError("email", "Veuillez renseigner un email valide");
+  }
+//je stocks dans contact les informations du formulaire
+    let contact = {
+      firstName: firstName,
+      lastName: lastName,
+      address: address,
+      city: city,
+      email: email,
+    };
 
+    console.log(contact);
+  
+//je stocks dans la variable produitIds l'id des produits de mon panier
+  const productIds = panier.map((product) => product._id);
 
+  console.log(productIds);
+// je retourne ma requete a l'API en la transformant en stringify
+  // fetch(`http://localhost:3000/api/products/order`, {
+  //   method: "POST",
+  //   headers: {
+  //     "content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify({ contact, products: productIds }),
+  // })
+  //   .then((res) => res.json())
 
-const contact = {
-  firstName: firstName,
-  lastName: lastName,
-  address: address,
-  city: city,
-  email: email,
-};
+  //   .catch((error) => {
+  //     console.error(error);
+  //   });
 
-const productIds = panier.map((product) => product._id);
+  const postAPI = async (order) => {
+    let res = await fetch(`http://localhost:3000/api/products/` + 'order', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify(order),
+    })
+  
+    let result = await res.json()
+  console.log(result);
+    window.location.href = `confirmation.html?orderId=${result.orderId}`
+  
+  }
+  
+postAPI(contact)
 
-fetch(`http://localhost:3000/api/products/order`, {
-  method: "POST",
-  headers: {
-    "content-Type": "application/json",
-  },
-  body: JSON.stringify({ contact, products: productIds }),
-})
-.then((res) => res.json())
-
-.catch((error) => {
-  console.error(error);
 });
