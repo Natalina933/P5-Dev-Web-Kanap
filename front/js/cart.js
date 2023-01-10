@@ -144,26 +144,40 @@ function refreshDisplay() {
 //////////////////////////////////////////////// //////////////
 // Eléments de formulaire & requête POST ////////////////////
 //////////////////////////////////////////////// //////////////
+
+
+
   document.getElementById("order").addEventListener("click", function (event) {
   event.preventDefault();
-//Récupérer les valeurs du formulaire
-//Contrôle des infos avec Regex et Récupération des données du formulaire  
+  //Contrôle des infos avec Regex et Récupération des données du formulaire  
   //Création des expressions régulières pour contrôler les infos entrées par l'utilisateur
   //// REGEX
-// pas de regex pour les adresses, l'attribut "required"   
+  // pas de regex pour les adresses, l'attribut "required"   
   // let textRegex = new RegExp("^[^.?!:;,/\\/_-]([. '-]?[a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$");
-  let addressRegex = new RegExp("^[^.?!:;,/\\/_-]([, .:;'-]?[0-9a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$");
-  let emailRegex = new RegExp("^[^. ?!:;,/\\/_-]([._-]?[a-z0-9])+[^.?!: ;,/\\/_-][@][a-z0-9]+[.][a-z][a-z]+$");
+  let addressRegex = /^[^.?!:;,/\\/_-]([, .:;'-]?[0-9a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$/;
+  let emailRegex = /^[^. ?!:;,/\\/_-]([._-]?[a-z0-9])+[^.?!: ;,/\\/_-][@][a-z0-9]+[.][a-z][a-z]+$/;
   
-    
-    
-
+  function displayFromError(inputId, message) {
+    // Get the element with the specified inputId
+    const inputElement = document.getElementById(inputId);
+  
+    // Add an error message after the input element
+    const errorElement = document.createElement("p");
+    errorElement.classList.add("error-message");
+    errorElement.innerText = message;
+    inputElement.parentNode.insertBefore(errorElement, inputElement.nextSibling);
+  
+    // Add a red border to the input element
+    inputElement.classList.add("error");
+  }  
+  
+  
+  //Récupérer les valeurs du formulaire
 const firstName = document.getElementById("firstName").value;
 if (!firstName || firstName === "") {
   displayFromError("firstName", "Veuillez renseigner votre prénom");
   return;
 }
-console.log(firstName);
 const lastName = document.getElementById("lastName").value;
 if (!lastName || lastName === "") {
   displayFromError("lastName", "Veuillez renseigner votre nom");
@@ -173,7 +187,7 @@ const address = document.getElementById("address").value;
 if (!address || address === "") {
   displayFromError("address", "Veuillez renseigner votre adresse");
   return;
-}else if (!addressRegex.test(address)) {
+}else if (!addressRegex.match(address)) {
   displayFromError("email", "Veuillez renseigner une adresse valide");
   return;
 }
@@ -190,7 +204,9 @@ if (!email || email === "") {
   displayFromError("email", "Veuillez renseigner un email valide");
   return;
 }
+console.log(emailRegex);
 })
+
 
 const contact = {
   firstName: firstName,
@@ -210,9 +226,7 @@ fetch(`http://localhost:3000/api/products/order`, {
   body: JSON.stringify({ contact, products: productIds }),
 })
 .then((res) => res.json())
-.then((order) => {
-  return order;
-})
+
 .catch((error) => {
   console.error(error);
 });
