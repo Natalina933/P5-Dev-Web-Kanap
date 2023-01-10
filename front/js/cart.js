@@ -144,9 +144,6 @@ function refreshDisplay() {
 //////////////////////////////////////////////// //////////////
 // Eléments de formulaire & requête POST ////////////////////
 //////////////////////////////////////////////// //////////////
-
-
-
   document.getElementById("order").addEventListener("click", function (event) {
   event.preventDefault();
   //Contrôle des infos avec Regex et Récupération des données du formulaire  
@@ -174,38 +171,36 @@ function refreshDisplay() {
   
   //Récupérer les valeurs du formulaire
 const firstName = document.getElementById("firstName").value;
+console.log(firstName);
 if (!firstName || firstName === "") {
   displayFromError("firstName", "Veuillez renseigner votre prénom");
-  return;
 }
 const lastName = document.getElementById("lastName").value;
+console.log(lastName);
 if (!lastName || lastName === "") {
   displayFromError("lastName", "Veuillez renseigner votre nom");
-  return;
 }
 const address = document.getElementById("address").value;
+console.log(address);
+
 if (!address || address === "") {
   displayFromError("address", "Veuillez renseigner votre adresse");
-  return;
-}else if (!addressRegex.match(address)) {
-  displayFromError("email", "Veuillez renseigner une adresse valide");
-  return;
+}else if (!addressRegex.test(address)) {
+  displayFromError("address", "Veuillez renseigner une adresse valide");
 }
 const city = document.getElementById("city").value;
 if (!city || city === "") {
   displayFromError("city", "Veuillez renseigner votre ville");
-  return;
 }
 const email = document.getElementById("email").value;
+console.log(email);
 if (!email || email === "") {
   displayFromError("email", "Veuillez renseigner votre email");
-  return;
 } else if (!emailRegex.test(email)) {
   displayFromError("email", "Veuillez renseigner un email valide");
-  return;
 }
-console.log(emailRegex);
 })
+
 
 
 const contact = {
