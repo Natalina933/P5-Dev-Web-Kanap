@@ -219,19 +219,6 @@ document.getElementById("order").addEventListener("click", function (event) {
 
   console.log(productIds);
 // je retourne ma requete a l'API en la transformant en stringify
-  // fetch(`http://localhost:3000/api/products/order`, {
-  //   method: "POST",
-  //   headers: {
-  //     "content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify({ contact, products: productIds }),
-  // })
-  //   .then((res) => res.json())
-
-  //   .catch((error) => {
-  //     console.error(error);
-  //   });
-
   const postAPI = async (order) => {
     let res = await fetch(`http://localhost:3000/api/products/` + 'order', {
       method: 'POST',
@@ -243,8 +230,10 @@ document.getElementById("order").addEventListener("click", function (event) {
     })
   
     let result = await res.json()
+
   console.log(result);
-    window.location.href = `confirmation.html?orderId=${result.orderId}`
+    
+  window.location.href = `confirmation.html?orderId=${result.orderId}`
   
   }
   
