@@ -203,40 +203,44 @@ document.getElementById("order").addEventListener("click", function (event) {
   } else if (!emailRegex.test(email)) {
     displayFromError("email", "Veuillez renseigner un email valide");
   }
-//je stocks dans contact les informations du formulaire
-    let contact = {
-      firstName: firstName,
-      lastName: lastName,
-      address: address,
-      city: city,
-      email: email,
-    };
+  //je stocks dans contact les informations du formulaire
+  let contact = {
+    firstName: firstName,
+    lastName: lastName,
+    address: address,
+    city: city,
+    email: email,
+  };
 
-    console.log(contact);
-  
-//je stocks dans la variable produitIds l'id des produits de mon panier
+  console.log(contact);
+
+  //je stocks dans la variable produitIds l'id des produits de mon panier
   const productIds = panier.map((product) => product._id);
 
   console.log(productIds);
-// je retourne ma requete a l'API en la transformant en stringify
+  // je retourne ma requete a l'API en la transformant en stringify
   const postAPI = async (order) => {
-    let res = await fetch(`http://localhost:3000/api/products/` + 'order', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify(order),
-    })
-  
-    let result = await res.json()
-
-  console.log(result);
-    
-  window.location.href = `confirmation.html?orderId=${result.orderId}`
-  
-  }
-  
-postAPI(contact)
-
+    try {
+      let res = await fetch(`http://localhost:3000/api/products/order`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json;charset=utf-8",
+        },
+        body: JSON.stringify(order),
+      });
+      if (res.ok) {
+        let result = await res.json();
+        localStorage.removeItem("panier")//vide localStorage
+        window.location.href = `confirmation.html?orderId=${result.orderId}`
+        console.log(result);
+      } else {
+        alert("Une erreur est survenue");
+      }
+    } catch (error) {
+      console.log("Une erreur");
+      alert("Une erreur est survenue");
+    }
+  };
+  postAPI({ contact, products: productIds });
 });
