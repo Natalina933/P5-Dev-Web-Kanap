@@ -2,7 +2,7 @@
 const url = new URL(window.location.href);
 const id = url.searchParams.get("id");
 
-//Récupere les infos du produit grace à l'id via l'api
+//Requêter l'ensemble des produits grace à l'id via l'api
 fetch("http://localhost:3000/api/products/" + id)
   .then((res) => res.json()) //promesse en demande une autre promesse
   //boucle - parcourir l'api

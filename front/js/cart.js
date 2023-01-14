@@ -3,7 +3,7 @@
 //////////////////////////
 
 //Modification de la balise title du navigateur cart --> Page Panier (plus compréhensible par l'utilisateur)
-document.title = "Page Panier";
+document.title = "Mon Panier";
 //Déclaration des variables - panier (LS) et infos ()stockeront
 let panier = [];
 let infos = [];
