@@ -22,17 +22,15 @@ function getFromCache() {
 panier = getFromCache();
 
 // Récupérer un produit depuis l'API
-function getProductFromAPI(id) {
-  return fetch(`http://localhost:3000/api/products/${id}`)
-    .then((res) => res.json())
-    .then((product) => {
-      return product;
-    });
+async function getProductFromAPI(id) {
+  const res = await fetch(`http://localhost:3000/api/products/${id}`);
+  const product = await res.json();
+  return product;
 }
 console.log(panier);
 
 // Supprimer le panier
-function deleteItem(id, color) {
+function deleteProductFromCart(id, color) {
   panier = panier.filter(
     (article) => article._id !== id || article.color !== color
   );
@@ -120,7 +118,7 @@ function refreshDisplay() {
         event.preventDefault();
         const id = articleElt.dataset.id;
         const color = articleElt.dataset.color;
-        deleteItem(id, color);
+        deleteProductFromCart(id, color);
       });
 
     articleElt
@@ -160,49 +158,49 @@ document.getElementById("order").addEventListener("click", function (event) {
     //Récupère l'élément avec l'inputId
     const inputElement = document.getElementById(inputId);
 
-    // Ajouter un message d'erreur après l'élément d'entrée
-    const errorElement = document.createElement("p");
-    errorElement.classList.add("error-message");
-    errorElement.innerText = message;
-    inputElement.parentNode.insertBefore(
-      errorElement,
-      inputElement.nextSibling
-    );
-
-    // Ajouter une bordure rouge à l'élément d'entrée
-    inputElement.classList.add("error");
+    // Ajouter un message d'erreur après l'élément l'input
+    const errorElement = document.getElementById(inputId + "ErrorMsg");
+    errorElement.textContent = message;
   }
+  let formHasError = false;
 
   //Récupérer les valeurs du formulaire
   const firstName = document.getElementById("firstName").value;
   console.log(firstName);
   if (!firstName || firstName === "") {
     displayFromError("firstName", "Veuillez renseigner votre prénom");
+    formHasError = true;
   }
   const lastName = document.getElementById("lastName").value;
   console.log(lastName);
   if (!lastName || lastName === "") {
     displayFromError("lastName", "Veuillez renseigner votre nom");
+    formHasError = true;
   }
   const address = document.getElementById("address").value;
   console.log(address);
 
   if (!address || address === "") {
     displayFromError("address", "Veuillez renseigner votre adresse");
-  } else if (!addressRegex.test(address)) {
-    displayFromError("address", "Veuillez renseigner une adresse valide");
+    formHasError = true;
   }
+
   const city = document.getElementById("city").value;
   if (!city || city === "") {
     displayFromError("city", "Veuillez renseigner votre ville");
+    formHasError = true;
   }
   const email = document.getElementById("email").value;
   console.log(email);
   if (!email || email === "") {
     displayFromError("email", "Veuillez renseigner votre email");
-  } else if (!emailRegex.test(email)) {
-    displayFromError("email", "Veuillez renseigner un email valide");
+    formHasError = true;
+  }else if (!email.match(emailRegex)) {
+    displayFromError("email","Veuillez renseigner un mail valide")
   }
+  if(formHasError)return
+
+
   //je stocks dans contact les informations du formulaire
   let contact = {
     firstName: firstName,
@@ -231,8 +229,8 @@ document.getElementById("order").addEventListener("click", function (event) {
       });
       if (res.ok) {
         let result = await res.json();
-        localStorage.removeItem("panier")//vide localStorage
-        window.location.href = `confirmation.html?orderId=${result.orderId}`
+        localStorage.removeItem("panier"); //vide localStorage
+        window.location.href = `confirmation.html?orderId=${result.orderId}`;
         console.log(result);
       } else {
         alert("Une erreur est survenue");
