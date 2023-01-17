@@ -53,7 +53,8 @@ function updatePriceAndQuantity(id, color, newValue) {
   refreshDisplay();
 }
 
-//Tableau contenant les promesses des infos de chaque produit de son panier récupérer dans le localStage
+//Tableau contenant les promesses des infos de chaque produit
+//de son panier récupérer dans le localStage
 const tableauPromesse = panier.map((productInCart) =>
   getProductFromAPI(productInCart._id)
 );
@@ -67,6 +68,7 @@ Promise.all(tableauPromesse)
     console.log(err);
     alert("Une erreur est survenue");
   });
+  
 
 //Créer et insérer des éléments
 //Sélection de la balise de la page
@@ -139,18 +141,21 @@ function refreshDisplay() {
   document.getElementById("totalQuantity").textContent = totalQuantity;
 }
 
-//////////////////////////////////////////////// //////////////
-// Eléments de formulaire & requête POST ////////////////////
-//////////////////////////////////////////////// //////////////
+// Eléments de formulaire & requête POST
 document.getElementById("order").addEventListener("click", function (event) {
   event.preventDefault();
+  if (panier.length === 0) {
+    window.location.href = "./index.html";
+  }
+
+
   //Contrôle des infos avec Regex et Récupération des données du formulaire
   //Création des expressions régulières pour contrôler les infos entrées par l'utilisateur
-  //// REGEX
-  // pas de regex pour les adresses, l'attribut "required"
+
+  // pas de regex pour les adresses, qui pourraient avoir l'attribut "required"
   // let textRegex = new RegExp("^[^.?!:;,/\\/_-]([. '-]?[a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$");
-  let addressRegex =
-    /^[^.?!:;,/\\/_-]([, .:;'-]?[0-9a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$/;
+  // let addressRegex =
+  //   /^[^.?!:;,/\\/_-]([, .:;'-]?[0-9a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$/;
   let emailRegex =
     /^[^. ?!:;,/\\/_-]([._-]?[a-z0-9])+[^.?!: ;,/\\/_-][@][a-z0-9]+[.][a-z][a-z]+$/;
 
@@ -195,11 +200,10 @@ document.getElementById("order").addEventListener("click", function (event) {
   if (!email || email === "") {
     displayFromError("email", "Veuillez renseigner votre email");
     formHasError = true;
-  }else if (!email.match(emailRegex)) {
-    displayFromError("email","Veuillez renseigner un mail valide")
+  } else if (!email.match(emailRegex)) {
+    displayFromError("email", "Veuillez renseigner un mail valide");
   }
-  if(formHasError)return
-
+  if (formHasError) return;
 
   //je stocks dans contact les informations du formulaire
   let contact = {
@@ -209,6 +213,7 @@ document.getElementById("order").addEventListener("click", function (event) {
     city: city,
     email: email,
   };
+  
 
   console.log(contact);
 
