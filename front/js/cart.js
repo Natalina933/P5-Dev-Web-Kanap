@@ -136,7 +136,6 @@ function refreshDisplay() {
     //pointer sur l'élément items et injecter l' html dans le dom
     document.getElementById("cart__items").appendChild(articleElt);
   }
-
   document.getElementById("totalPrice").textContent = totalPrice.toFixed(2);
   document.getElementById("totalQuantity").textContent = totalQuantity;
 }
@@ -145,8 +144,9 @@ function refreshDisplay() {
 document.getElementById("order").addEventListener("click", function (event) {
   event.preventDefault();
   if (panier.length === 0) {
-    window.location.href = "./index.html";
-  }
+    alert("veuillez selectionner un produit");
+    return;
+}
 
 
   //Contrôle des infos avec Regex et Récupération des données du formulaire

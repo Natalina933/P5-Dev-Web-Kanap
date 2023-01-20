@@ -1,14 +1,14 @@
-// Récupérer l'API la liste des canapés sur le serveur 
+// Récupérer l'API la liste des canapés sur le serveur
 dataFetch();
 function dataFetch() {
   let resapi = "http://localhost:3000/api/products";
 
-  fetch(resapi)//création d'une promesse
+  fetch(resapi) //création d'une promesse
     .then((res) => res.json()) //promesse en demande une autre promesse
     //boucle - parcourir l'api
     .then((products) => {
       for (let article of products) {
-        let display = ""// affiche le html
+        let display = ""; // affiche le html
         display += `
         <a href="./product.html?id=${article._id}">
           <article>
@@ -18,11 +18,10 @@ function dataFetch() {
           </article>
         </a>
 `;
-        document //pointer sur l'élément items et injecter l' html dans le dom  
+        document //pointer sur l'élément items et injecter l' html dans le dom
           .getElementById("items")
           .insertAdjacentHTML("beforeend", display);
       }
     })
     .catch((err) => console.log(err));
 }
-
